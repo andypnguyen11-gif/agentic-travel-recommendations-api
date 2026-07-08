@@ -165,6 +165,16 @@ with no AI involvement. Three representative interactions, recorded in
 | Structured JSON logs (PII-safe) | CloudWatch/App Insights/X-Ray wiring |
 | Mock member + partner config | Real DB persistence, partner admin UI |
 
+## Four-week plan
+This is the four-week first step; the table above bounds what ships now. Indicative week-by-week:
+
+| Week | Focus |
+|---|---|
+| 1 | Domain models + fixtures (Silver/Gold/Platinum, last-5 bookings), mock member and read-only partner-config services, deterministic candidate generator. |
+| 2 | Rule engine with fixed order (category exclusions → caps), tenant guard, shared recommendation service brain; unit tests for cap enforcement, cruise exclusion, and isolation. |
+| 3 | REST endpoint, MCP stdio server (two tools), CLI demo — all sharing the one service layer; PII-safe structured JSON logging with correlation IDs. |
+| 4 | Deterministic safety evals, Docker + compose, MCP Inspector walkthrough, README + incident runbook; buffer for hardening (non-root image, healthcheck) noted as later work. |
+
 ## Notes
 - Logs never include full profiles, travel history, or recommendation reasons;
   production would apply arrivia-approved redaction/tokenization.
