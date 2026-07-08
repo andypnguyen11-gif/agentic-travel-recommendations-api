@@ -5,6 +5,8 @@ member's profile and generate partner-rule-compliant travel recommendations on
 arrivia's multi-tenant, white-label platform. Deterministic backend; the LLM is
 the MCP client, never the rule enforcer.
 
+**📹 Video walkthrough:** https://www.loom.com/share/540f530d27d541968ee61f78ada758bf
+
 ## How it works (at a glance)
 - Deterministic generator turns member facts into candidate offers.
 - Deterministic rule engine applies partner **category exclusions, then caps**.
