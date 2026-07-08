@@ -61,3 +61,25 @@ def test_cruise_never_appears_via_rest_for_excluding_partner():
     assert resp.status_code == 200
     cats = [r["category"] for r in resp.json()["recommendations"]]
     assert "Cruise" not in cats
+
+
+def test_unexpected_error_returns_500_safe_shape():
+    from app.dependencies import get_recommendation_service
+
+    class _Boom:
+        def get_recommendations(self, ctx, member_id):
+            raise RuntimeError("boom: secret internals 0xDEADBEEF")
+
+    app.dependency_overrides[get_recommendation_service] = lambda: _Boom()
+    try:
+        safe_client = TestClient(app, raise_server_exceptions=False)
+        resp = safe_client.post(
+            "/recommendations", json={"member_id": "M-silver-capped"}, headers=_headers()
+        )
+        assert resp.status_code == 500
+        body = resp.json()
+        assert body["error_code"] == "TOOL_EXECUTION_ERROR"
+        assert "request_id" in body
+        assert "boom" not in resp.text  # no internal detail / traceback leaked
+    finally:
+        app.dependency_overrides.clear()
