@@ -107,9 +107,46 @@ and both callers are untouched.
    read-only to us.
 
 ### B2 — Required Reasoning Question (answer WITHOUT AI assistance)
-> **PLACEHOLDER — Andy to write by hand, no AI.** Describe a scenario where an AI
-> coding assistant gives a plausible-but-wrong answer for enforcing partner rules,
-> how you'd catch it, and what you'd verify before acting.
+
+*Prompt: Describe a scenario where an AI coding assistant gives a
+plausible-but-wrong answer for enforcing partner rules, how you'd catch it, and
+what you'd verify before acting.*
+
+A similar problem came up while I was building an AI clinical co-pilot on top of
+OpenEMR. An AI coding assistant could generate an API implementation that looks
+correct, passes basic tests, and returns valid data, but fails to enforce
+business rules at the correct boundary. For example, the assistant might trust a
+member or partner ID provided by the client instead of validating the member's
+actual partner association before retrieving data or applying recommendation
+rules. The API could appear to work correctly while allowing data or
+configuration to cross tenant boundaries.
+
+I encountered a similar issue when my OpenEMR agent answered questions using
+information related to other patients. I addressed the problem by creating a tool
+registry factory that restricted which tools and records were available within
+the current patient context. I also added verification middleware that ran after
+the model generated a response but before anything reached the user. Every cited
+source had to match a record the agent actually retrieved, and specific values
+were checked against the underlying data.
+
+I would apply the same approach to this travel recommendations API. I would keep
+partner-rule enforcement deterministic and outside the model, validate the
+member-to-partner relationship before reading partner configuration or generating
+recommendations, and enforce rules such as cruise exclusions and recommendation
+limits server-side.
+
+I would catch an incorrect AI-generated implementation with negative tests that
+attempt cross-tenant access, modified member or partner IDs, excluded cruise
+recommendations, and requests that exceed partner-specific limits. Before
+accepting the implementation, I would trace the full request path through
+authentication, tenant validation, partner configuration lookup, recommendation
+generation, and final response filtering.
+
+The main lesson from my OpenEMR project was that plausible code is not the same
+as correct code. Before acting on an AI-generated solution, I verify the
+implementation against the actual business requirements, test isolation
+boundaries and failure paths, and confirm that automated tests would catch future
+regressions.
 
 ## Section C — AI Usage Log
 
