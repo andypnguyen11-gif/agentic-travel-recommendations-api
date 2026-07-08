@@ -31,8 +31,8 @@ def safe_log_fields(
     latency_ms: float = 0.0,
     failure_reason: str | None = None,
 ) -> dict:
-    """Allowlisted, PII-safe log fields. member_id is acceptable for the mock;
-    full profiles, travel history, and recommendation reasons are never logged.
+    """Allowlisted, PII-safe log fields. Member IDs, full profiles, travel history,
+    and recommendation reasons are intentionally excluded from logs.
     Production would apply arrivia-approved redaction/tokenization."""
     return {
         "request_id": ctx.request_id,
