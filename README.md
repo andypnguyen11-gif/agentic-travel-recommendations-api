@@ -217,3 +217,12 @@ This is the four-week first step; the table above bounds what ships now. Indicat
   production would apply arrivia-approved redaction/tokenization.
 - MCP caller identity is a trusted launch context in the mock; production replaces
   it with signed workload identity / JWT claims / gateway-injected tenant.
+- Partner IDs are human-readable (`partner_capped`, `partner_no_cruise`,
+  `partner_unlimited`) as a deliberate demo-readability choice — they make the
+  Inspector/CLI walkthrough self-explanatory about which rule is under test. The
+  tenant guard treats `partner_id` as an opaque string (plain equality match), so
+  the format carries no correctness or security meaning; production would use
+  opaque, tenant-scoped identifiers (e.g. UUIDs) supplied by the verified identity
+  layer, never a client-supplied header. Note that UUID-vs-string is cosmetic — the
+  security property is that `partner_id` comes from *signed identity*, not that it
+  looks random.
